@@ -81,7 +81,7 @@ export default function ProjectScopePage() {
         <div className="max-w-6xl mx-auto">
           <div className="section-badge w-fit mb-4"><BookOpen size={12}/>Literature Survey</div>
           <h2 className="section-title text-gradient mb-3" style={{ fontFamily:"'Outfit',sans-serif" }}>Literature Survey</h2>
-          <p className="text-slate-400 mb-10 max-w-2xl">Key prior work that informs WellMind's methodology across all four research domains.</p>
+          <p className="text-slate-400 mb-10 max-w-2xl">Key prior work that informs WellMind&apos;s methodology across all four research domains.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {litSurvey.map(l => (
               <div key={l.domain} className="glass glass-hover rounded-2xl p-6">

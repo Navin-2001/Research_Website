@@ -30,7 +30,7 @@ export default function ContactPage() {
             Contact Us
           </h1>
           <p className="text-slate-400 text-lg">
-            Have questions about our research, collaboration opportunities, or the WellMind app? We'd love to hear from you.
+            Have questions about our research, collaboration opportunities, or the WellMind app? We&apos;d love to hear from you.
           </p>
         </div>
       </section>
@@ -110,7 +110,7 @@ export default function ContactPage() {
                   Message Sent!
                 </h3>
                 <p className="text-slate-400 max-w-xs">
-                  Thank you for reaching out. We'll get back to you within 24–48 hours.
+                  Thank you for reaching out. We&apos;ll get back to you within 24&#8211;48 hours.
                 </p>
                 <button
                   onClick={() => { setSent(false); setForm({ name: "", email: "", subject: "", message: "" }); }}
