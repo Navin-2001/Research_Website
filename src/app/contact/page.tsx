@@ -1,20 +1,51 @@
 "use client";
 import { useState } from "react";
-import { Mail, MapPin, Phone, Send, CheckCircle2 } from "lucide-react";
+import { Mail, MapPin, Phone, Send, CheckCircle2, AlertCircle } from "lucide-react";
+
+// ─── Formspree form ID ──────────────────────────────────────────────────────
+// 1. Go to https://formspree.io  →  Sign up (free)
+// 2. Create a new form, set the email to it22361240@my.sliit.lk
+// 3. Copy your form ID (looks like "xrgwnpkb") and paste it below
+const FORMSPREE_ID = "xkoyjwjz"; // → sends to naveendissanayaka789@gmail.com
+// ───────────────────────────────────────────────────────────────────────────
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate submission
-    setTimeout(() => {
+    setError("");
+
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+          _replyto: form.email,
+          _subject: `WellMind Contact: ${form.subject} — from ${form.name}`,
+        }),
+      });
+
+      if (res.ok) {
+        setSent(true);
+        setForm({ name: "", email: "", subject: "", message: "" });
+      } else {
+        const data = await res.json();
+        setError(data?.error ?? "Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+    } finally {
       setLoading(false);
-      setSent(true);
-    }, 1500);
+    }
   };
 
   return (
@@ -45,6 +76,7 @@ export default function ContactPage() {
                 Research Team
               </h3>
               <div className="flex flex-col gap-5">
+                {/* Location */}
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center shrink-0">
                     <MapPin size={17} className="text-blue-400" />
@@ -57,20 +89,43 @@ export default function ContactPage() {
                     </p>
                   </div>
                 </div>
+
+                {/* Primary Email */}
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center shrink-0">
                     <Mail size={17} className="text-violet-400" />
                   </div>
                   <div>
-                    <p className="text-white font-medium text-sm">Email</p>
-                    <a href="mailto:wellmind.research@gmail.com" className="text-violet-400 text-sm hover:text-violet-300 transition-colors mt-0.5 block">
+                    <p className="text-white font-medium text-sm">Team Email</p>
+                    <a
+                      href="mailto:wellmind.research@gmail.com"
+                      className="text-violet-400 text-sm hover:text-violet-300 transition-colors mt-0.5 block"
+                    >
                       wellmind.research@gmail.com
                     </a>
                   </div>
                 </div>
+
+                {/* SLIIT Email */}
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0">
-                    <Phone size={17} className="text-emerald-400" />
+                    <Mail size={17} className="text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-white font-medium text-sm">Project Lead (SLIIT)</p>
+                    <a
+                      href="mailto:it22361240@my.sliit.lk"
+                      className="text-emerald-400 text-sm hover:text-emerald-300 transition-colors mt-0.5 block"
+                    >
+                      it22361240@my.sliit.lk
+                    </a>
+                  </div>
+                </div>
+
+                {/* Phone */}
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center shrink-0">
+                    <Phone size={17} className="text-pink-400" />
                   </div>
                   <div>
                     <p className="text-white font-medium text-sm">Phone</p>
@@ -113,7 +168,7 @@ export default function ContactPage() {
                   Thank you for reaching out. We&apos;ll get back to you within 24&#8211;48 hours.
                 </p>
                 <button
-                  onClick={() => { setSent(false); setForm({ name: "", email: "", subject: "", message: "" }); }}
+                  onClick={() => { setSent(false); setError(""); }}
                   className="btn-outline px-6 py-2 text-sm"
                 >
                   Send Another
@@ -124,6 +179,15 @@ export default function ContactPage() {
                 <h3 className="text-white font-bold text-xl mb-6" style={{ fontFamily: "'Outfit', sans-serif" }}>
                   Send a Message
                 </h3>
+
+                {/* Error Banner */}
+                {error && (
+                  <div className="flex items-start gap-3 bg-rose-500/10 border border-rose-500/30 rounded-xl px-4 py-3 mb-5 text-rose-400 text-sm">
+                    <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                    {error}
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
@@ -161,10 +225,10 @@ export default function ContactPage() {
                       className="form-input"
                     >
                       <option value="" disabled>Select a topic</option>
-                      <option value="collaboration">Research Collaboration</option>
-                      <option value="dataset">Dataset Access Request</option>
-                      <option value="app">App Feedback / Bug Report</option>
-                      <option value="general">General Inquiry</option>
+                      <option value="Research Collaboration">Research Collaboration</option>
+                      <option value="Dataset Access Request">Dataset Access Request</option>
+                      <option value="App Feedback / Bug Report">App Feedback / Bug Report</option>
+                      <option value="General Inquiry">General Inquiry</option>
                     </select>
                   </div>
                   <div>
